@@ -1,0 +1,645 @@
+{% extends "base.html" %}
+
+{% block title %}Add Question - Admin{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <div class="breadcrumb">
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span>Add Question</span>
+                </div>
+                <h1>
+                    <i class="fas fa-plus-circle"></i>
+                    Add New Question
+                </h1>
+                <p>Create a new practical question with a complete code solution.</p>
+            </div>
+
+            <div class="form-card">
+                <form method="POST" class="admin-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="subject_id">
+                                <i class="fas fa-graduation-cap"></i>
+                                Subject *
+                            </label>
+                            <select id="subject_id" name="subject_id" class="form-select" required>
+                                <option value="">Choose a subject...</option>
+                                {% for subject in subjects %}
+                                    <option value="{{ subject.id }}">{{ subject.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="form-help">Select the subject this question belongs to</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="difficulty">
+                                <i class="fas fa-signal"></i>
+                                Difficulty Level
+                            </label>
+                            <select id="difficulty" name="difficulty" class="form-select">
+                                <option value="Easy">🟢 Easy</option>
+                                <option value="Medium" selected>🟡 Medium</option>
+                                <option value="Hard">🔴 Hard</option>
+                            </select>
+                            <small class="form-help">How challenging is this question for students?</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">
+                            <i class="fas fa-heading"></i>
+                            Question Title *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="title" 
+                            name="title" 
+                            class="form-input" 
+                            required 
+                            placeholder="e.g., Write a Java program to implement Stack using Arrays"
+                            autocomplete="off"
+                        >
+                        <small class="form-help">A clear, descriptive title for the question</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="question_text">
+                            <i class="fas fa-question-circle"></i>
+                            Problem Statement *
+                        </label>
+                        <textarea 
+                            id="question_text" 
+                            name="question_text" 
+                            class="form-input" 
+                            rows="6" 
+                            required
+                            placeholder="Describe the problem in detail...
+
+Example:
+Write a Java program that implements a Stack data structure using arrays. Your implementation should include the following methods:
+
+1. push(int item) - Add an element to the top of the stack
+2. pop() - Remove and return the top element
+3. peek() - Return the top element without removing it
+4. isEmpty() - Check if the stack is empty
+5. display() - Show all elements in the stack
+
+Include proper error handling for stack overflow and underflow conditions."
+                        ></textarea>
+                        <small class="form-help">Provide a detailed description of what students need to implement</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="code_answer">
+                            <i class="fas fa-code"></i>
+                            Complete Solution *
+                        </label>
+                        <div class="code-input-container">
+                            <div class="code-toolbar">
+                                <div class="language-indicator">
+                                    <i class="fas fa-code"></i>
+                                    <span>Code Solution</span>
+                                </div>
+                                <div class="code-actions">
+                                    <button type="button" class="btn btn-sm btn-outline" onclick="formatCode()">
+                                        <i class="fas fa-indent"></i> Format
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline" onclick="validateCode()">
+                                        <i class="fas fa-check"></i> Validate
+                                    </button>
+                                </div>
+                            </div>
+                            <textarea 
+                                id="code_answer" 
+                                name="code_answer" 
+                                class="code-textarea" 
+                                rows="20" 
+                                required
+                                placeholder="import java.util.Scanner;
+
+public class StackImplementation {
+    private int[] stack;
+    private int top;
+    private int maxSize;
+    
+    // Constructor
+    public StackImplementation(int size) {
+        maxSize = size;
+        stack = new int[maxSize];
+        top = -1;
+    }
+    
+    // Push method - adds element to top of stack
+    public void push(int item) {
+        if (isFull()) {
+            System.out.println('Stack Overflow! Cannot add ' + item);
+            return;
+        }
+        stack[++top] = item;
+        System.out.println(item + ' pushed to stack');
+    }
+    
+    // Pop method - removes and returns top element
+    public int pop() {
+        if (isEmpty()) {
+            System.out.println('Stack Underflow! Stack is empty');
+            return -1;
+        }
+        return stack[top--];
+    }
+    
+    // Peek method - returns top element without removing
+    public int peek() {
+        if (isEmpty()) {
+            System.out.println('Stack is empty');
+            return -1;
+        }
+        return stack[top];
+    }
+    
+    // Check if stack is empty
+    public boolean isEmpty() {
+        return (top == -1);
+    }
+    
+    // Check if stack is full
+    public boolean isFull() {
+        return (top == maxSize - 1);
+    }
+    
+    // Display all elements
+    public void display() {
+        if (isEmpty()) {
+            System.out.println('Stack is empty');
+            return;
+        }
+        System.out.print('Stack elements: ');
+        for (int i = top; i >= 0; i--) {
+            System.out.print(stack[i] + ' ');
+        }
+        System.out.println();
+    }
+    
+    // Main method for testing
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.print('Enter stack size: ');
+        int size = scanner.nextInt();
+        
+        StackImplementation stack = new StackImplementation(size);
+        
+        while (true) {
+            System.out.println('\n--- Stack Operations ---');
+            System.out.println('1. Push');
+            System.out.println('2. Pop');
+            System.out.println('3. Peek');
+            System.out.println('4. Display');
+            System.out.println('5. Exit');
+            System.out.print('Enter your choice: ');
+            
+            int choice = scanner.nextInt();
+            
+            switch (choice) {
+                case 1:
+                    System.out.print('Enter element to push: ');
+                    int element = scanner.nextInt();
+                    stack.push(element);
+                    break;
+                case 2:
+                    int poppedElement = stack.pop();
+                    if (poppedElement != -1) {
+                        System.out.println('Popped: ' + poppedElement);
+                    }
+                    break;
+                case 3:
+                    int topElement = stack.peek();
+                    if (topElement != -1) {
+                        System.out.println('Top element: ' + topElement);
+                    }
+                    break;
+                case 4:
+                    stack.display();
+                    break;
+                case 5:
+                    System.out.println('Exiting...');
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println('Invalid choice! Try again.');
+            }
+        }
+    }
+}"
+                            ></textarea>
+                        </div>
+                        <small class="form-help">Provide a complete, working solution with comments and proper formatting</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Create Question
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        padding: 2rem 0 4rem;
+        background: #f8f9fa;
+        min-height: calc(100vh - 80px);
+    }
+
+    .form-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .breadcrumb {
+        margin-bottom: 1rem;
+        color: #6c757d;
+    }
+
+    .breadcrumb a {
+        color: #3498db;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: #2980b9;
+    }
+
+    .breadcrumb-separator {
+        margin: 0 0.5rem;
+        color: #adb5bd;
+    }
+
+    .form-header h1 {
+        font-size: 2rem;
+        color: #212529;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .form-header p {
+        color: #6c757d;
+        font-size: 1.1rem;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        padding: 2rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .code-input-container {
+        border: 2px solid #e9ecef;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        transition: border-color 0.3s ease;
+    }
+
+    .code-input-container:focus-within {
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    .code-toolbar {
+        background: #f8f9fa;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .language-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6c757d;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .code-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .code-textarea {
+        width: 100%;
+        border: none;
+        padding: 1rem;
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        resize: vertical;
+        background: white;
+        outline: none;
+        min-height: 400px;
+    }
+
+    .code-textarea::placeholder {
+        color: #adb5bd;
+        font-style: italic;
+    }
+
+    .form-help {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: block;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        padding-top: 2rem;
+        margin-top: 2rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .form-header h1 {
+            font-size: 1.5rem;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .code-toolbar {
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
+
+        .code-actions {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+    }
+
+    /* Validation styles */
+    .form-input.valid {
+        border-color: #28a745;
+    }
+
+    .form-input.invalid {
+        border-color: #dc3545;
+    }
+
+    .validation-message {
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+    }
+
+    .validation-message.success {
+        color: #155724;
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+    }
+
+    .validation-message.error {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('.admin-form');
+        const titleInput = document.getElementById('title');
+        const questionTextArea = document.getElementById('question_text');
+        const codeTextArea = document.getElementById('code_answer');
+        const subjectSelect = document.getElementById('subject_id');
+
+        // Auto-resize textareas
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        [questionTextArea, codeTextArea].forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                autoResize(this);
+            });
+        });
+
+        // Form validation
+        form.addEventListener('submit', function(e) {
+            const title = titleInput.value.trim();
+            const questionText = questionTextArea.value.trim();
+            const codeAnswer = codeTextArea.value.trim();
+            const subjectId = subjectSelect.value;
+            
+            if (!title || !questionText || !codeAnswer || !subjectId) {
+                e.preventDefault();
+                showToast('Please fill in all required fields!', 'error');
+                return false;
+            }
+
+            if (title.length < 10) {
+                e.preventDefault();
+                titleInput.focus();
+                showToast('Question title must be at least 10 characters long!', 'error');
+                return false;
+            }
+
+            if (questionText.length < 50) {
+                e.preventDefault();
+                questionTextArea.focus();
+                showToast('Problem statement must be at least 50 characters long!', 'error');
+                return false;
+            }
+
+            if (codeAnswer.length < 100) {
+                e.preventDefault();
+                codeTextArea.focus();
+                showToast('Code solution must be at least 100 characters long!', 'error');
+                return false;
+            }
+
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+        });
+
+        // Real-time validation
+        titleInput.addEventListener('input', function() {
+            validateField(this, this.value.trim().length >= 10, 'Title must be at least 10 characters');
+        });
+
+        questionTextArea.addEventListener('input', function() {
+            validateField(this, this.value.trim().length >= 50, 'Problem statement must be at least 50 characters');
+        });
+
+        codeTextArea.addEventListener('input', function() {
+            validateField(this, this.value.trim().length >= 100, 'Code solution must be at least 100 characters');
+        });
+
+        function validateField(field, isValid, errorMessage) {
+            const existingMessage = field.parentNode.querySelector('.validation-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            if (field.value.trim() === '') {
+                field.classList.remove('valid', 'invalid');
+                return;
+            }
+
+            if (isValid) {
+                field.classList.remove('invalid');
+                field.classList.add('valid');
+            } else {
+                field.classList.remove('valid');
+                field.classList.add('invalid');
+                
+                const message = document.createElement('div');
+                message.className = 'validation-message error';
+                message.textContent = errorMessage;
+                field.parentNode.appendChild(message);
+            }
+        }
+    });
+
+    // Format code function
+    function formatCode() {
+        const codeTextArea = document.getElementById('code_answer');
+        let code = codeTextArea.value;
+        
+        // Simple code formatting (basic indentation fix)
+        const lines = code.split('\n');
+        let indentLevel = 0;
+        const formattedLines = [];
+        
+        lines.forEach(line => {
+            const trimmedLine = line.trim();
+            
+            if (trimmedLine.includes('}') && !trimmedLine.includes('{')) {
+                indentLevel = Math.max(0, indentLevel - 1);
+            }
+            
+            if (trimmedLine) {
+                formattedLines.push('    '.repeat(indentLevel) + trimmedLine);
+            } else {
+                formattedLines.push('');
+            }
+            
+            if (trimmedLine.includes('{')) {
+                indentLevel++;
+            }
+        });
+        
+        codeTextArea.value = formattedLines.join('\n');
+        showToast('Code formatted successfully!', 'success');
+    }
+
+    // Validate code function
+    function validateCode() {
+        const codeTextArea = document.getElementById('code_answer');
+        const code = codeTextArea.value.trim();
+        
+        if (code.length === 0) {
+            showToast('Please enter some code first!', 'error');
+            return;
+        }
+        
+        // Basic validation checks
+        const issues = [];
+        
+        // Check for common syntax issues
+        const openBraces = (code.match(/\{/g) || []).length;
+        const closeBraces = (code.match(/\}/g) || []).length;
+        if (openBraces !== closeBraces) {
+            issues.push('Unmatched curly braces');
+        }
+        
+        const openParens = (code.match(/\(/g) || []).length;
+        const closeParens = (code.match(/\)/g) || []).length;
+        if (openParens !== closeParens) {
+            issues.push('Unmatched parentheses');
+        }
+        
+        // Check for basic structure
+        if (!code.includes('public class') && !code.includes('def ') && !code.includes('function')) {
+            issues.push('No main class or function found');
+        }
+        
+        if (issues.length === 0) {
+            showToast('Code validation passed! ✓', 'success');
+        } else {
+            showToast('Issues found: ' + issues.join(', '), 'error');
+        }
+    }
+
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i>
+            <span>${message}</span>
+        `;
+        
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 100);
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+</script>
+{% endblock %}

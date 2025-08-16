@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+
+{% block title %}About Me - College Practical Helper{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="hero-section text-center mb-5">
+        <div class="hero-content">
+            <div class="profile-avatar mb-4">
+                <div class="avatar-circle">
+                    <i class="fas fa-user-graduate fa-3x"></i>
+                </div>
+            </div>
+            <h1 class="hero-title">About the Developer</h1>
+            <p class="hero-subtitle">Creating educational tools to help students succeed</p>
+        </div>
+    </div>
+
+    <!-- About Content -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="about-card">
+                <div class="card-header text-center">
+                    <h2><i class="fas fa-code text-primary"></i> Prithviraj Patil</h2>
+                    <p class="text-muted">Developer</p>
+                </div>
+                
+                <div class="card-body">
+                    <div class="about-section mb-4">
+                        <h4><i class="fas fa-lightbulb text-warning"></i> About This Project</h4>
+                        <p>
+                            Welcome to the College Practical Helper! This web application was designed and developed to assist students 
+                            in their practical exams by providing easy access to programming questions and their solutions. 
+                            As a passionate developer and educator, I believe in making learning accessible and efficient for everyone.
+                        </p>
+                    </div>
+
+                    <div class="about-section mb-4">
+                        <h4><i class="fas fa-target text-success"></i> Mission</h4>
+                        <p>
+                            To create innovative educational tools that simplify learning and help students achieve their academic goals. 
+                            This platform provides a comprehensive collection of practical exam questions across various subjects, 
+                            complete with detailed solutions and an AI-powered debug helper.
+                        </p>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="contact-section">
+                        <h4><i class="fas fa-address-card text-info"></i> Get in Touch</h4>
+                        <div class="contact-grid">
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h6>Email</h6>
+                                    <a href="mailto:prithvirajpatil400@gmail.com" class="contact-link">
+                                        prithvirajpatil400@gmail.com
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h6>Phone</h6>
+                                    <a href="tel:+919474926670" class="contact-link">
+                                        +91 9474926670
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skills Section -->
+                    <div class="skills-section mt-5">
+                        <h4><i class="fas fa-cogs text-secondary"></i> Technologies Used</h4>
+                        <div class="tech-stack">
+                            <span class="tech-badge">Python</span>
+                            <span class="tech-badge">Flask</span>
+                            <span class="tech-badge">SQLite</span>
+                            <span class="tech-badge">HTML5</span>
+                            <span class="tech-badge">CSS3</span>
+                            <span class="tech-badge">JavaScript</span>
+                            <span class="tech-badge">Bootstrap</span>
+                            <span class="tech-badge">Responsive Design</span>
+                        </div>
+                    </div>
+
+                    <!-- Call to Action -->
+                    <div class="cta-section text-center mt-5">
+                        <h5>Need Help or Have Suggestions?</h5>
+                        <p>Feel free to reach out if you have any questions, feedback, or suggestions for improvement!</p>
+                        <div class="cta-buttons">
+                            <a href="mailto:prithvirajpatil400@gmail.com" class="btn btn-primary">
+                                <i class="fas fa-envelope"></i> Send Email
+                            </a>
+                            <a href="tel:+919474926670" class="btn btn-success">
+                                <i class="fas fa-phone"></i> Call Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Dashboard -->
+    <div class="text-center mt-4">
+        {% if session.admin_logged_in %}
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Admin Dashboard
+            </a>
+        {% else %}
+            <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 3rem 0;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar {
+    position: relative;
+}
+
+.avatar-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.about-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: none;
+}
+
+.about-card .card-header {
+    background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+    border-bottom: 2px solid var(--primary-color);
+    padding: 2rem;
+}
+
+.about-section {
+    padding: 1rem;
+    border-left: 4px solid var(--primary-color);
+    background: rgba(52, 152, 219, 0.05);
+    border-radius: 8px;
+}
+
+.contact-section {
+    background: linear-gradient(45deg, #f8f9fa, #fff);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.contact-item:hover {
+    transform: translateY(-2px);
+}
+
+.contact-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.contact-details h6 {
+    margin-bottom: 0.5rem;
+    color: #666;
+    font-weight: 600;
+}
+
+.contact-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.contact-link:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+.skills-section {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+}
+
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.tech-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.tech-badge:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.cta-section {
+    background: linear-gradient(45deg, #ff9a9e, #fecfef);
+    padding: 2rem;
+    border-radius: 12px;
+    color: #333;
+}
+
+.cta-buttons {
+    margin-top: 1rem;
+}
+
+.cta-buttons .btn {
+    margin: 0 0.5rem;
+    border-radius: 25px;
+    padding: 0.7rem 1.5rem;
+    font-weight: 500;
+}
+
+/* Animations */
+.about-card {
+    animation: slideInUp 0.6s ease-out;
+}
+
+.contact-item {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.contact-item:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.tech-badge {
+    animation: fadeInScale 0.6s ease-out;
+}
+
+.tech-badge:nth-child(even) {
+    animation-delay: 0.1s;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 0;
+    }
+    
+    .avatar-circle {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tech-stack {
+        justify-content: center;
+    }
+    
+    .cta-buttons .btn {
+        display: block;
+        margin: 0.5rem 0;
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

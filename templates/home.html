@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Home - College Practical Helper{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <i class="fas fa-code"></i>
+                College Practical Helper
+            </h1>
+            <p class="hero-subtitle">
+                Master your practical exams with instant access to questions, solutions, and AI-powered debugging assistance.
+            </p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <i class="fas fa-book"></i>
+                    <span class="stat-number">{{ subjects|length }}</span>
+                    <span class="stat-label">Subjects</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-question-circle"></i>
+                    <span class="stat-number">100+</span>
+                    <span class="stat-label">Questions</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-robot"></i>
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">AI Helper</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-animation">
+            <div class="floating-icon" style="--delay: 0s;">
+                <i class="fab fa-python"></i>
+            </div>
+            <div class="floating-icon" style="--delay: 1s;">
+                <i class="fab fa-java"></i>
+            </div>
+            <div class="floating-icon" style="--delay: 2s;">
+                <i class="fas fa-database"></i>
+            </div>
+            <div class="floating-icon" style="--delay: 0.5s;">
+                <i class="fab fa-html5"></i>
+            </div>
+            <div class="floating-icon" style="--delay: 1.5s;">
+                <i class="fas fa-code-branch"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Subjects Section -->
+<section class="subjects-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>
+                <i class="fas fa-graduation-cap"></i>
+                Choose Your Subject
+            </h2>
+            <p>Click on any subject to explore practical questions and solutions</p>
+        </div>
+
+        {% if subjects %}
+            <div class="subjects-grid">
+                {% for subject in subjects %}
+                    <div class="subject-card" style="--accent-color: {{ subject.color }};">
+                        <div class="subject-card-inner">
+                            <div class="subject-icon">
+                                <i class="{% if subject.name == 'AJP' %}fab fa-java{% elif subject.name == 'DSV' %}fas fa-chart-bar{% elif subject.name == 'DAA' %}fas fa-project-diagram{% elif subject.name == 'DBMS' %}fas fa-database{% elif subject.name == 'Web Tech' %}fab fa-html5{% else %}fas fa-code{% endif %}"></i>
+                            </div>
+                            <div class="subject-content">
+                                <h3 class="subject-name">{{ subject.name }}</h3>
+                                <p class="subject-description">{{ subject.description or 'Practical questions and solutions' }}</p>
+                                <div class="subject-meta">
+                                    <span class="question-count">
+                                        <i class="fas fa-question-circle"></i>
+                                        Multiple Questions
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="subject-overlay">
+                                <a href="{{ url_for('subject_questions', subject_id=subject.id) }}" class="explore-btn">
+                                    <i class="fas fa-arrow-right"></i>
+                                    Explore
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-glow"></div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-book-open"></i>
+                <h3>No Subjects Available</h3>
+                <p>Subjects will appear here once they are added by the admin.</p>
+                {% if session.admin_logged_in %}
+                    <a href="{{ url_for('admin_add_subject') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Subject
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>
+                <i class="fas fa-star"></i>
+                Why Choose PracticalHelper?
+            </h2>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-lightning-bolt"></i>
+                </div>
+                <h3>Instant Access</h3>
+                <p>No login required for students. Access all questions and solutions instantly.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3>Complete Solutions</h3>
+                <p>Every question comes with well-commented, working code solutions.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>AI Debug Helper</h3>
+                <p>Stuck with an error? Our AI assistant helps debug your code instantly.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Mobile Friendly</h3>
+                <p>Study anywhere, anytime with our fully responsive design.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Actions -->
+<section class="quick-actions">
+    <div class="container">
+        <div class="actions-grid">
+            <div class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>Browse Questions</h3>
+                <p>Explore practical questions by subject</p>
+                <a href="#subjects" class="action-btn">Get Started</a>
+            </div>
+            
+            <div class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+                <h3>Debug Your Code</h3>
+                <p>Get AI-powered debugging assistance</p>
+                <a href="{{ url_for('debug_helper') }}" class="action-btn">Try Debug Helper</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add intersection observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, observerOptions);
+
+    // Observe all animatable elements
+    document.querySelectorAll('.subject-card, .feature-card, .action-card').forEach(card => {
+        observer.observe(card);
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}{{ subject.name }} Questions - College Practical Helper{% endblock %}
+
+{% block content %}
+<!-- Subject Header -->
+<section class="subject-header" style="--subject-color: {{ subject.color }};">
+    <div class="container">
+        <div class="subject-header-content">
+            <div class="subject-info">
+                <div class="subject-breadcrumb">
+                    <a href="{{ url_for('home') }}">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span>{{ subject.name }}</span>
+                </div>
+                <h1 class="subject-title">
+                    <i class="{% if subject.name == 'AJP' %}fab fa-java{% elif subject.name == 'DSV' %}fas fa-chart-bar{% elif subject.name == 'DAA' %}fas fa-project-diagram{% elif subject.name == 'DBMS' %}fas fa-database{% elif subject.name == 'Web Tech' %}fab fa-html5{% else %}fas fa-code{% endif %}"></i>
+                    {{ subject.name }}
+                </h1>
+                <p class="subject-desc">{{ subject.description or 'Practical questions and solutions' }}</p>
+                <div class="subject-stats">
+                    <div class="stat">
+                        <i class="fas fa-question-circle"></i>
+                        <span>{{ questions|length }} Questions</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-clock"></i>
+                        <span>Updated Recently</span>
+                    </div>
+                </div>
+            </div>
+            <div class="subject-actions">
+                <a href="{{ url_for('debug_helper') }}" class="btn btn-secondary">
+                    <i class="fas fa-robot"></i>
+                    Debug Helper
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Questions List -->
+<section class="questions-section">
+    <div class="container">
+        {% if questions %}
+            <div class="questions-header">
+                <h2>
+                    <i class="fas fa-list"></i>
+                    Practice Questions
+                </h2>
+                <div class="questions-filters">
+                    <div class="filter-group">
+                        <label for="difficultyFilter">Filter by Difficulty:</label>
+                        <select id="difficultyFilter" class="form-select">
+                            <option value="">All Levels</option>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Search questions..." class="form-input">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="questions-grid" id="questionsGrid">
+                {% for question in questions %}
+                    <div class="question-card" data-difficulty="{{ question.difficulty }}" data-title="{{ question.title.lower() }}">
+                        <div class="question-header">
+                            <div class="question-meta">
+                                <span class="difficulty-badge difficulty-{{ question.difficulty.lower() }}">
+                                    {{ question.difficulty }}
+                                </span>
+                                <span class="question-date">
+                                    <i class="fas fa-calendar"></i>
+                                    {{ question.created_at.split()[0] if question.created_at else 'Recent' }}
+                                </span>
+                            </div>
+                            <h3 class="question-title">{{ question.title }}</h3>
+                        </div>
+
+                        <div class="question-preview">
+                            <p>{{ question.question_text[:150] }}{% if question.question_text|length > 150 %}...{% endif %}</p>
+                        </div>
+
+                        <div class="question-footer">
+                            <div class="question-actions">
+                                <a href="{{ url_for('question_detail', question_id=question.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                    View Solution
+                                </a>
+                                <button class="btn btn-outline copy-link-btn" onclick="copyQuestionLink({{ question.id }})">
+                                    <i class="fas fa-link"></i>
+                                    Copy Link
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- No Results Message (Hidden by default) -->
+            <div class="no-results" id="noResults" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h3>No Questions Found</h3>
+                <p>Try adjusting your search criteria or filters.</p>
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <i class="fas fa-question-circle"></i>
+                <h3>No Questions Available</h3>
+                <p>Questions for {{ subject.name }} will appear here once they are added.</p>
+                {% if session.admin_logged_in %}
+                    <a href="{{ url_for('admin_add_question') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Question
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Quick Actions -->
+<section class="quick-actions-mini">
+    <div class="container">
+        <div class="actions-row">
+            <a href="{{ url_for('home') }}" class="action-item">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Subjects</span>
+            </a>
+            <a href="{{ url_for('debug_helper') }}" class="action-item">
+                <i class="fas fa-robot"></i>
+                <span>Debug Helper</span>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Search and filter functionality
+    const searchInput = document.getElementById('searchInput');
+    const difficultyFilter = document.getElementById('difficultyFilter');
+    const questionsGrid = document.getElementById('questionsGrid');
+    const noResults = document.getElementById('noResults');
+
+    function filterQuestions() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedDifficulty = difficultyFilter.value;
+        const questionCards = document.querySelectorAll('.question-card');
+        let visibleCount = 0;
+
+        questionCards.forEach(card => {
+            const title = card.getAttribute('data-title');
+            const difficulty = card.getAttribute('data-difficulty');
+            
+            const matchesSearch = title.includes(searchTerm);
+            const matchesDifficulty = !selectedDifficulty || difficulty === selectedDifficulty;
+            
+            if (matchesSearch && matchesDifficulty) {
+                card.style.display = 'block';
+                card.classList.add('animate-in');
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+                card.classList.remove('animate-in');
+            }
+        });
+
+        // Show/hide no results message
+        if (visibleCount === 0) {
+            questionsGrid.style.display = 'none';
+            noResults.style.display = 'flex';
+        } else {
+            questionsGrid.style.display = 'grid';
+            noResults.style.display = 'none';
+        }
+    }
+
+    // Add event listeners
+    searchInput.addEventListener('input', filterQuestions);
+    difficultyFilter.addEventListener('change', filterQuestions);
+
+    // Copy question link function
+    function copyQuestionLink(questionId) {
+        const url = `${window.location.origin}/question/${questionId}`;
+        navigator.clipboard.writeText(url).then(() => {
+            // Show temporary success message
+            const btn = event.target.closest('.copy-link-btn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.classList.add('success');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('success');
+            }, 2000);
+        }).catch(() => {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = url;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            // Show success message
+            const btn = event.target.closest('.copy-link-btn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.classList.add('success');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('success');
+            }, 2000);
+        });
+    }
+
+    // Animate cards on load
+    window.addEventListener('load', () => {
+        const cards = document.querySelectorAll('.question-card');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.classList.add('animate-in');
+            }, index * 100);
+        });
+    });
+</script>
+{% endblock %}

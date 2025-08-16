@@ -1,0 +1,493 @@
+{% extends "base.html" %}
+
+{% block title %}Add Subject - Admin{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <div class="breadcrumb">
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span>Add Subject</span>
+                </div>
+                <h1>
+                    <i class="fas fa-plus-circle"></i>
+                    Add New Subject
+                </h1>
+                <p>Create a new subject for students to explore practical questions and solutions.</p>
+            </div>
+
+            <div class="form-card">
+                <form method="POST" class="admin-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">
+                                <i class="fas fa-graduation-cap"></i>
+                                Subject Name *
+                            </label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                class="form-input" 
+                                required 
+                                placeholder="e.g., Advanced Java Programming"
+                                autocomplete="off"
+                            >
+                            <small class="form-help">Enter a clear, descriptive name for the subject</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="color">
+                                <i class="fas fa-palette"></i>
+                                Theme Color
+                            </label>
+                            <div class="color-input-group">
+                                <input 
+                                    type="color" 
+                                    id="color" 
+                                    name="color" 
+                                    class="color-input" 
+                                    value="#3498db"
+                                >
+                                <input 
+                                    type="text" 
+                                    class="form-input color-text" 
+                                    value="#3498db" 
+                                    readonly
+                                >
+                                <div class="color-presets">
+                                    <button type="button" class="color-preset" data-color="#3498db" title="Blue"></button>
+                                    <button type="button" class="color-preset" data-color="#e74c3c" title="Red"></button>
+                                    <button type="button" class="color-preset" data-color="#2ecc71" title="Green"></button>
+                                    <button type="button" class="color-preset" data-color="#f39c12" title="Orange"></button>
+                                    <button type="button" class="color-preset" data-color="#9b59b6" title="Purple"></button>
+                                    <button type="button" class="color-preset" data-color="#1abc9c" title="Teal"></button>
+                                    <button type="button" class="color-preset" data-color="#34495e" title="Dark"></button>
+                                    <button type="button" class="color-preset" data-color="#e67e22" title="Carrot"></button>
+                                </div>
+                            </div>
+                            <small class="form-help">Choose a color theme for this subject</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">
+                            <i class="fas fa-align-left"></i>
+                            Description
+                        </label>
+                        <textarea 
+                            id="description" 
+                            name="description" 
+                            class="form-input" 
+                            rows="4" 
+                            placeholder="Enter a brief description of the subject (optional)"
+                        ></textarea>
+                        <small class="form-help">Provide additional context about this subject for students</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Create Subject
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Preview Section -->
+                <div class="preview-section">
+                    <h3>
+                        <i class="fas fa-eye"></i>
+                        Live Preview
+                    </h3>
+                    <div class="subject-preview">
+                        <div class="subject-card-preview">
+                            <div class="subject-card-inner">
+                                <div class="subject-icon" id="previewIcon">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <div class="subject-content">
+                                    <h3 class="subject-name" id="previewName">Subject Name</h3>
+                                    <p class="subject-description" id="previewDescription">Subject description will appear here</p>
+                                    <div class="subject-meta">
+                                        <span class="question-count">
+                                            <i class="fas fa-question-circle"></i>
+                                            Multiple Questions
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="preview-note">This is how the subject will appear to students</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        padding: 2rem 0 4rem;
+        background: #f8f9fa;
+        min-height: calc(100vh - 80px);
+    }
+
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .breadcrumb {
+        margin-bottom: 1rem;
+        color: #6c757d;
+    }
+
+    .breadcrumb a {
+        color: #3498db;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: #2980b9;
+    }
+
+    .breadcrumb-separator {
+        margin: 0 0.5rem;
+        color: #adb5bd;
+    }
+
+    .form-header h1 {
+        font-size: 2rem;
+        color: #212529;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .form-header p {
+        color: #6c757d;
+        font-size: 1.1rem;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .admin-form {
+        padding: 2rem;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .color-input-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .color-input {
+        width: 50px;
+        height: 50px;
+        border: 2px solid #e9ecef;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .color-input:hover {
+        border-color: #3498db;
+        transform: scale(1.05);
+    }
+
+    .color-text {
+        width: 100px;
+        text-align: center;
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+    }
+
+    .color-presets {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-left: auto;
+    }
+
+    .color-preset {
+        width: 32px;
+        height: 32px;
+        border: 2px solid #e9ecef;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .color-preset:hover {
+        transform: scale(1.1);
+        border-color: #3498db;
+    }
+
+    .color-preset[data-color="#3498db"] { background-color: #3498db; }
+    .color-preset[data-color="#e74c3c"] { background-color: #e74c3c; }
+    .color-preset[data-color="#2ecc71"] { background-color: #2ecc71; }
+    .color-preset[data-color="#f39c12"] { background-color: #f39c12; }
+    .color-preset[data-color="#9b59b6"] { background-color: #9b59b6; }
+    .color-preset[data-color="#1abc9c"] { background-color: #1abc9c; }
+    .color-preset[data-color="#34495e"] { background-color: #34495e; }
+    .color-preset[data-color="#e67e22"] { background-color: #e67e22; }
+
+    .form-help {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: block;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        padding-top: 1rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .preview-section {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .preview-section h3 {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        color: #495057;
+    }
+
+    .subject-preview {
+        margin-bottom: 1rem;
+    }
+
+    .subject-card-preview {
+        max-width: 300px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .subject-card-preview:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .subject-card-preview .subject-card-inner {
+        padding: 1.5rem;
+    }
+
+    .subject-card-preview .subject-icon {
+        width: 60px;
+        height: 60px;
+        background: #3498db;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        margin-bottom: 1rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .subject-card-preview .subject-name {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #212529;
+        margin-bottom: 0.5rem;
+    }
+
+    .subject-card-preview .subject-description {
+        color: #6c757d;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        min-height: 2.7rem;
+    }
+
+    .subject-card-preview .subject-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #8e8e8e;
+        font-size: 0.8rem;
+    }
+
+    .preview-note {
+        text-align: center;
+        color: #6c757d;
+        font-size: 0.875rem;
+        font-style: italic;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-header h1 {
+            font-size: 1.5rem;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .color-input-group {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .color-presets {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .preview-section {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const nameInput = document.getElementById('name');
+        const descriptionInput = document.getElementById('description');
+        const colorInput = document.getElementById('color');
+        const colorText = document.querySelector('.color-text');
+        const colorPresets = document.querySelectorAll('.color-preset');
+        
+        // Preview elements
+        const previewName = document.getElementById('previewName');
+        const previewDescription = document.getElementById('previewDescription');
+        const previewIcon = document.getElementById('previewIcon');
+
+        // Update preview name
+        nameInput.addEventListener('input', function() {
+            const value = this.value.trim();
+            previewName.textContent = value || 'Subject Name';
+        });
+
+        // Update preview description
+        descriptionInput.addEventListener('input', function() {
+            const value = this.value.trim();
+            previewDescription.textContent = value || 'Subject description will appear here';
+        });
+
+        // Update preview color
+        function updatePreviewColor(color) {
+            previewIcon.style.backgroundColor = color;
+            colorText.value = color;
+        }
+
+        colorInput.addEventListener('input', function() {
+            updatePreviewColor(this.value);
+        });
+
+        // Color presets functionality
+        colorPresets.forEach(preset => {
+            preset.addEventListener('click', function() {
+                const color = this.dataset.color;
+                colorInput.value = color;
+                updatePreviewColor(color);
+                
+                // Visual feedback
+                colorPresets.forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Form validation
+        const form = document.querySelector('.admin-form');
+        form.addEventListener('submit', function(e) {
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                e.preventDefault();
+                nameInput.focus();
+                showToast('Subject name is required!', 'error');
+                return false;
+            }
+
+            if (name.length < 2) {
+                e.preventDefault();
+                nameInput.focus();
+                showToast('Subject name must be at least 2 characters long!', 'error');
+                return false;
+            }
+
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+        });
+
+        // Initialize with default color
+        updatePreviewColor('#3498db');
+        colorPresets[0].classList.add('active');
+    });
+
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i>
+            <span>${message}</span>
+        `;
+        
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 100);
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+</script>
+{% endblock %}

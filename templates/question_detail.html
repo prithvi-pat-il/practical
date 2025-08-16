@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% block title %}{{ question.title }} - College Practical Helper{% endblock %}
+
+{% block content %}
+<!-- Question Header -->
+<section class="question-header" style="--subject-color: {{ question.subject_color }};">
+    <div class="container">
+        <div class="question-breadcrumb">
+            <a href="{{ url_for('home') }}">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <span class="breadcrumb-separator">/</span>
+            <a href="{{ url_for('subject_questions', subject_id=question.subject_id) }}">
+                {{ question.subject_name }}
+            </a>
+            <span class="breadcrumb-separator">/</span>
+            <span>{{ question.title }}</span>
+        </div>
+        
+        <div class="question-header-content">
+            <div class="question-info">
+                <div class="question-meta">
+                    <span class="subject-badge" style="background-color: {{ question.subject_color }};">
+                        {{ question.subject_name }}
+                    </span>
+                    <span class="difficulty-badge difficulty-{{ question.difficulty.lower() }}">
+                        {{ question.difficulty }}
+                    </span>
+                </div>
+                <h1 class="question-title">{{ question.title }}</h1>
+            </div>
+            
+            <div class="question-actions">
+                <button class="btn btn-outline" onclick="copyQuestionLink()">
+                    <i class="fas fa-link"></i>
+                    Share
+                </button>
+                <a href="{{ url_for('debug_helper') }}" class="btn btn-secondary">
+                    <i class="fas fa-robot"></i>
+                    Debug Helper
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Question Content -->
+<section class="question-content">
+    <div class="container">
+        <div class="content-layout">
+            <!-- Question Description -->
+            <div class="question-section">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-question-circle"></i>
+                        Problem Statement
+                    </h2>
+                </div>
+                <div class="question-text">
+                    {{ question.question_text|replace('\n', '<br>')|safe }}
+                </div>
+            </div>
+
+            <!-- Code Solution -->
+            <div class="solution-section">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-code"></i>
+                        Solution
+                    </h2>
+                    <div class="solution-actions">
+                        <button class="btn btn-sm btn-outline" onclick="copyCode()">
+                            <i class="fas fa-copy"></i>
+                            Copy Code
+                        </button>
+                        <button class="btn btn-sm btn-outline" onclick="downloadCode()">
+                            <i class="fas fa-download"></i>
+                            Download
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="code-container">
+                    <div class="code-header">
+                        <div class="code-language">
+                            <i class="fas fa-code"></i>
+                            <span id="languageLabel">Code Solution</span>
+                        </div>
+                        <div class="code-actions-mobile">
+                            <button class="btn btn-sm" onclick="copyCode()">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <pre><code class="language-python" id="codeBlock">{{ question.code_answer }}</code></pre>
+                </div>
+            </div>
+
+            <!-- Additional Resources -->
+            <div class="resources-section">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-lightbulb"></i>
+                        Quick Tips
+                    </h2>
+                </div>
+                
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <i class="fas fa-play"></i>
+                        <h4>How to Run</h4>
+                        <p>Copy the code and run it in your preferred IDE or online compiler.</p>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <i class="fas fa-edit"></i>
+                        <h4>Customize</h4>
+                        <p>Modify the code to handle different input cases or add extra features.</p>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <i class="fas fa-bug"></i>
+                        <h4>Debug</h4>
+                        <p>Use our <a href="{{ url_for('debug_helper') }}">Debug Helper</a> if you encounter any issues.</p>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <i class="fas fa-share"></i>
+                        <h4>Share</h4>
+                        <p>Share this question with your classmates using the share button above.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Navigation -->
+<section class="question-navigation">
+    <div class="container">
+        <div class="nav-actions">
+            <a href="{{ url_for('subject_questions', subject_id=question.subject_id) }}" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i>
+                Back to {{ question.subject_name }}
+            </a>
+            
+            <div class="nav-links">
+                <a href="{{ url_for('debug_helper') }}" class="btn btn-secondary">
+                    <i class="fas fa-robot"></i>
+                    Debug Helper
+                </a>
+                <a href="{{ url_for('home') }}" class="btn btn-primary">
+                    <i class="fas fa-home"></i>
+                    All Subjects
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-detect programming language for syntax highlighting
+    window.addEventListener('DOMContentLoaded', function() {
+        const codeBlock = document.getElementById('codeBlock');
+        const languageLabel = document.getElementById('languageLabel');
+        const code = codeBlock.textContent.trim();
+        
+        // Simple language detection
+        let language = 'text';
+        let languageName = 'Code';
+        
+        if (code.includes('import ') || code.includes('def ') || code.includes('print(')) {
+            language = 'python';
+            languageName = 'Python';
+        } else if (code.includes('public class') || code.includes('System.out.println')) {
+            language = 'java';
+            languageName = 'Java';
+        } else if (code.includes('#include') || code.includes('cout <<')) {
+            language = 'cpp';
+            languageName = 'C++';
+        } else if (code.includes('SELECT') || code.includes('INSERT') || code.includes('CREATE TABLE')) {
+            language = 'sql';
+            languageName = 'SQL';
+        } else if (code.includes('<html>') || code.includes('<div>')) {
+            language = 'html';
+            languageName = 'HTML';
+        } else if (code.includes('function') || code.includes('const ') || code.includes('let ')) {
+            language = 'javascript';
+            languageName = 'JavaScript';
+        }
+        
+        // Update language class and label
+        codeBlock.className = `language-${language}`;
+        languageLabel.textContent = languageName;
+        
+        // Re-highlight with Prism
+        if (window.Prism) {
+            Prism.highlightElement(codeBlock);
+        }
+    });
+    
+    // Copy code to clipboard
+    function copyCode() {
+        const codeBlock = document.getElementById('codeBlock');
+        const text = codeBlock.textContent;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('Code copied to clipboard!', 'success');
+        }).catch(() => {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showToast('Code copied to clipboard!', 'success');
+        });
+    }
+    
+    // Download code as file
+    function downloadCode() {
+        const codeBlock = document.getElementById('codeBlock');
+        const code = codeBlock.textContent;
+        const filename = `{{ question.title|replace(' ', '_')|replace(':', '')|replace('?', '') }}.txt`;
+        
+        const blob = new Blob([code], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        showToast('Code downloaded!', 'success');
+    }
+    
+    // Copy question link
+    function copyQuestionLink() {
+        const url = window.location.href;
+        
+        navigator.clipboard.writeText(url).then(() => {
+            showToast('Question link copied!', 'success');
+        }).catch(() => {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = url;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showToast('Question link copied!', 'success');
+        });
+    }
+    
+    // Show toast notification
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check' : 'info'}-circle"></i>
+            <span>${message}</span>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Show toast
+        setTimeout(() => toast.classList.add('show'), 100);
+        
+        // Hide toast after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => document.body.removeChild(toast), 300);
+        }, 3000);
+    }
+    
+    // Smooth scroll to sections
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('a[href^="#"]')) {
+            e.preventDefault();
+            const target = document.querySelector(e.target.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,453 @@
+{% extends "base.html" %}
+
+{% block title %}Debug Helper - College Practical Helper{% endblock %}
+
+{% block content %}
+<!-- Debug Helper Header -->
+<section class="debug-header">
+    <div class="container">
+        <div class="debug-header-content">
+            <div class="debug-info">
+                <h1 class="debug-title">
+                    <i class="fas fa-robot"></i>
+                    AI Debug Helper
+                </h1>
+                <p class="debug-subtitle">
+                    Stuck with a coding error? Paste your code and error message below, and our AI assistant will help you debug it!
+                </p>
+            </div>
+            <div class="debug-features">
+                <div class="feature-badge">
+                    <i class="fas fa-lightning-bolt"></i>
+                    <span>Instant Analysis</span>
+                </div>
+                <div class="feature-badge">
+                    <i class="fas fa-brain"></i>
+                    <span>Smart Suggestions</span>
+                </div>
+                <div class="feature-badge">
+                    <i class="fas fa-code"></i>
+                    <span>Multi-Language</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Debug Interface -->
+<section class="debug-interface">
+    <div class="container">
+        <div class="debug-layout">
+            <!-- Input Panel -->
+            <div class="debug-input-panel">
+                <div class="panel-header">
+                    <h2>
+                        <i class="fas fa-code"></i>
+                        Your Code & Error
+                    </h2>
+                    <div class="input-actions">
+                        <button class="btn btn-sm btn-outline" onclick="clearInputs()">
+                            <i class="fas fa-trash"></i>
+                            Clear
+                        </button>
+                        <button class="btn btn-sm btn-primary" onclick="analyzeCode()" id="analyzeBtn">
+                            <i class="fas fa-search"></i>
+                            Analyze
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="input-sections">
+                    <!-- Code Input -->
+                    <div class="input-section">
+                        <label for="codeInput">
+                            <i class="fas fa-file-code"></i>
+                            Your Code (Optional)
+                        </label>
+                        <textarea id="codeInput" class="code-textarea" placeholder="Paste your code here...
+Example:
+def calculate_sum(a, b):
+    return a + b
+
+result = calculate_sum(5, 3)
+print(result)"></textarea>
+                        <div class="input-info">
+                            <span><i class="fas fa-info-circle"></i> Paste your code to get better suggestions</span>
+                        </div>
+                    </div>
+
+                    <!-- Error Input -->
+                    <div class="input-section">
+                        <label for="errorInput">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Error Message (Optional)
+                        </label>
+                        <textarea id="errorInput" class="error-textarea" placeholder="Paste your error message here...
+Example:
+NameError: name 'variable_name' is not defined
+    at line 15 in main.py"></textarea>
+                        <div class="input-info">
+                            <span><i class="fas fa-info-circle"></i> Copy the complete error message for accurate help</span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Examples -->
+                    <div class="quick-examples">
+                        <h4>Quick Examples:</h4>
+                        <div class="example-buttons">
+                            <button class="example-btn" onclick="loadExample('indentation')">
+                                Indentation Error
+                            </button>
+                            <button class="example-btn" onclick="loadExample('syntax')">
+                                Syntax Error
+                            </button>
+                            <button class="example-btn" onclick="loadExample('name')">
+                                NameError
+                            </button>
+                            <button class="example-btn" onclick="loadExample('index')">
+                                IndexError
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="debug-results-panel">
+                <div class="panel-header">
+                    <h2>
+                        <i class="fas fa-lightbulb"></i>
+                        AI Suggestions
+                    </h2>
+                </div>
+                
+                <div class="results-content" id="resultsContent">
+                    <div class="initial-message">
+                        <div class="ai-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <h3>👋 Hello! I'm your Debug Assistant</h3>
+                            <p>I'm here to help you solve coding problems. Here's how to get started:</p>
+                            <ul>
+                                <li><strong>Paste your code</strong> in the left panel (optional but helpful)</li>
+                                <li><strong>Include error messages</strong> for accurate analysis</li>
+                                <li><strong>Click "Analyze"</strong> to get instant debugging help</li>
+                            </ul>
+                            <p>Even if you don't have code or errors, I can provide general debugging tips!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Loading indicator -->
+                <div class="loading-indicator" id="loadingIndicator" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <span>Analyzing your code...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Debug Tips Section -->
+        <div class="debug-tips-section">
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-graduation-cap"></i>
+                    General Debugging Tips
+                </h2>
+            </div>
+            
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h4>Read Error Messages</h4>
+                    <p>Error messages usually tell you exactly what's wrong and on which line.</p>
+                </div>
+                
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-print"></i>
+                    </div>
+                    <h4>Use Print Statements</h4>
+                    <p>Add print() statements to see what values your variables have at different points.</p>
+                </div>
+                
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-spell-check"></i>
+                    </div>
+                    <h4>Check Spelling</h4>
+                    <p>Make sure variable names, function names, and keywords are spelled correctly.</p>
+                </div>
+                
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-indent"></i>
+                    </div>
+                    <h4>Mind Indentation</h4>
+                    <p>Python requires consistent indentation. Use either spaces or tabs, not both.</p>
+                </div>
+                
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-brackets-curly"></i>
+                    </div>
+                    <h4>Match Brackets</h4>
+                    <p>Make sure all opening brackets ( [ { have matching closing brackets ) ] }.</p>
+                </div>
+                
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-step-forward"></i>
+                    </div>
+                    <h4>Debug Step by Step</h4>
+                    <p>Break your problem into smaller parts and test each part separately.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Actions -->
+<section class="quick-actions-mini">
+    <div class="container">
+        <div class="actions-row">
+            <a href="{{ url_for('home') }}" class="action-item">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Home</span>
+            </a>
+            <a href="#debug-interface" class="action-item">
+                <i class="fas fa-robot"></i>
+                <span>Try Debug Helper</span>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Example code snippets for demonstration
+    const examples = {
+        indentation: {
+            code: `def my_function():
+print("Hello, World!")  # This line should be indented
+return True`,
+            error: `IndentationError: expected an indented block
+    at line 2 in script.py`
+        },
+        syntax: {
+            code: `name = input("Enter your name"
+print("Hello, " + name)  # Missing closing parenthesis`,
+            error: `SyntaxError: invalid syntax
+    at line 1 in script.py`
+        },
+        name: {
+            code: `def greet_user():
+    print("Hello, " + user_name)  # user_name is not defined
+
+greet_user()`,
+            error: `NameError: name 'user_name' is not defined
+    at line 2 in script.py`
+        },
+        index: {
+            code: `numbers = [1, 2, 3, 4, 5]
+print(numbers[10])  # Index out of range`,
+            error: `IndexError: list index out of range
+    at line 2 in script.py`
+        }
+    };
+
+    // Load example into inputs
+    function loadExample(type) {
+        const example = examples[type];
+        if (example) {
+            document.getElementById('codeInput').value = example.code;
+            document.getElementById('errorInput').value = example.error;
+            
+            // Animate the textareas
+            const codeTextarea = document.getElementById('codeInput');
+            const errorTextarea = document.getElementById('errorInput');
+            
+            codeTextarea.style.borderColor = '#3498db';
+            errorTextarea.style.borderColor = '#e74c3c';
+            
+            setTimeout(() => {
+                codeTextarea.style.borderColor = '';
+                errorTextarea.style.borderColor = '';
+            }, 1000);
+            
+            // Auto-analyze after loading example
+            setTimeout(() => analyzeCode(), 500);
+        }
+    }
+
+    // Clear all inputs
+    function clearInputs() {
+        document.getElementById('codeInput').value = '';
+        document.getElementById('errorInput').value = '';
+        document.getElementById('resultsContent').innerHTML = `
+            <div class="initial-message">
+                <div class="ai-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <h3>👋 Hello! I'm your Debug Assistant</h3>
+                    <p>I'm here to help you solve coding problems. Here's how to get started:</p>
+                    <ul>
+                        <li><strong>Paste your code</strong> in the left panel (optional but helpful)</li>
+                        <li><strong>Include error messages</strong> for accurate analysis</li>
+                        <li><strong>Click "Analyze"</strong> to get instant debugging help</li>
+                    </ul>
+                    <p>Even if you don't have code or errors, I can provide general debugging tips!</p>
+                </div>
+            </div>
+        `;
+    }
+
+    // Analyze code function
+    async function analyzeCode() {
+        const code = document.getElementById('codeInput').value.trim();
+        const error = document.getElementById('errorInput').value.trim();
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const resultsContent = document.getElementById('resultsContent');
+
+        // Show loading
+        analyzeBtn.disabled = true;
+        analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+        loadingIndicator.style.display = 'flex';
+
+        try {
+            const response = await fetch('/api/debug', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code, error })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                displaySuggestions(data.suggestions);
+            } else {
+                displayError('Sorry, there was an error analyzing your code. Please try again.');
+            }
+        } catch (err) {
+            console.error('Error:', err);
+            displayError('Network error. Please check your connection and try again.');
+        }
+
+        // Hide loading
+        analyzeBtn.disabled = false;
+        analyzeBtn.innerHTML = '<i class="fas fa-search"></i> Analyze';
+        loadingIndicator.style.display = 'none';
+    }
+
+    // Display suggestions
+    function displaySuggestions(suggestions) {
+        const resultsContent = document.getElementById('resultsContent');
+        
+        let html = `
+            <div class="ai-response">
+                <div class="ai-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <h3>🔍 Analysis Complete!</h3>
+                    <p>Here are my suggestions to help you debug your code:</p>
+                </div>
+            </div>
+        `;
+
+        suggestions.forEach((suggestion, index) => {
+            html += `
+                <div class="suggestion-item" style="animation-delay: ${index * 0.1}s;">
+                    <div class="suggestion-content">
+                        ${suggestion.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `
+            <div class="response-actions">
+                <button class="btn btn-outline" onclick="analyzeCode()">
+                    <i class="fas fa-redo"></i> Analyze Again
+                </button>
+                <button class="btn btn-outline" onclick="clearInputs()">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+            </div>
+        `;
+
+        resultsContent.innerHTML = html;
+
+        // Animate suggestions
+        setTimeout(() => {
+            const suggestions = document.querySelectorAll('.suggestion-item');
+            suggestions.forEach(item => item.classList.add('animate-in'));
+        }, 100);
+    }
+
+    // Display error message
+    function displayError(message) {
+        const resultsContent = document.getElementById('resultsContent');
+        resultsContent.innerHTML = `
+            <div class="error-message">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="error-content">
+                    <h3>Oops! Something went wrong</h3>
+                    <p>${message}</p>
+                    <button class="btn btn-primary" onclick="analyzeCode()">
+                        <i class="fas fa-retry"></i> Try Again
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    // Auto-resize textareas
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    // Add auto-resize to textareas
+    document.addEventListener('DOMContentLoaded', function() {
+        const textareas = document.querySelectorAll('.code-textarea, .error-textarea');
+        textareas.forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                autoResize(this);
+            });
+            
+            // Initial resize
+            autoResize(textarea);
+        });
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + Enter to analyze
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            analyzeCode();
+        }
+    });
+
+    // Smooth scroll to debug interface
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('a[href="#debug-interface"]')) {
+            e.preventDefault();
+            const target = document.querySelector('.debug-interface');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    });
+</script>
+{% endblock %}

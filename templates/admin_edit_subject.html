@@ -1,0 +1,160 @@
+{% extends "admin_add_subject.html" %}
+
+{% block title %}Edit Subject - Admin{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <div class="breadcrumb">
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span>Edit Subject</span>
+                </div>
+                <h1>
+                    <i class="fas fa-edit"></i>
+                    Edit Subject
+                </h1>
+                <p>Update the subject information below.</p>
+            </div>
+
+            <div class="form-card">
+                <form method="POST" class="admin-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">
+                                <i class="fas fa-graduation-cap"></i>
+                                Subject Name *
+                            </label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                class="form-input" 
+                                required 
+                                value="{{ subject.name }}"
+                                placeholder="e.g., Advanced Java Programming"
+                                autocomplete="off"
+                            >
+                            <small class="form-help">Enter a clear, descriptive name for the subject</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="color">
+                                <i class="fas fa-palette"></i>
+                                Theme Color
+                            </label>
+                            <div class="color-input-group">
+                                <input 
+                                    type="color" 
+                                    id="color" 
+                                    name="color" 
+                                    class="color-input" 
+                                    value="{{ subject.color or '#3498db' }}"
+                                >
+                                <input 
+                                    type="text" 
+                                    class="form-input color-text" 
+                                    value="{{ subject.color or '#3498db' }}" 
+                                    readonly
+                                >
+                                <div class="color-presets">
+                                    <button type="button" class="color-preset" data-color="#3498db" title="Blue"></button>
+                                    <button type="button" class="color-preset" data-color="#e74c3c" title="Red"></button>
+                                    <button type="button" class="color-preset" data-color="#2ecc71" title="Green"></button>
+                                    <button type="button" class="color-preset" data-color="#f39c12" title="Orange"></button>
+                                    <button type="button" class="color-preset" data-color="#9b59b6" title="Purple"></button>
+                                    <button type="button" class="color-preset" data-color="#1abc9c" title="Teal"></button>
+                                    <button type="button" class="color-preset" data-color="#34495e" title="Dark"></button>
+                                    <button type="button" class="color-preset" data-color="#e67e22" title="Carrot"></button>
+                                </div>
+                            </div>
+                            <small class="form-help">Choose a color theme for this subject</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">
+                            <i class="fas fa-align-left"></i>
+                            Description
+                        </label>
+                        <textarea 
+                            id="description" 
+                            name="description" 
+                            class="form-input" 
+                            rows="4" 
+                            placeholder="Enter a brief description of the subject (optional)"
+                        >{{ subject.description or '' }}</textarea>
+                        <small class="form-help">Provide additional context about this subject for students</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Update Subject
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Preview Section -->
+                <div class="preview-section">
+                    <h3>
+                        <i class="fas fa-eye"></i>
+                        Live Preview
+                    </h3>
+                    <div class="subject-preview">
+                        <div class="subject-card-preview">
+                            <div class="subject-card-inner">
+                                <div class="subject-icon" id="previewIcon">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <div class="subject-content">
+                                    <h3 class="subject-name" id="previewName">{{ subject.name }}</h3>
+                                    <p class="subject-description" id="previewDescription">{{ subject.description or 'Subject description will appear here' }}</p>
+                                    <div class="subject-meta">
+                                        <span class="question-count">
+                                            <i class="fas fa-question-circle"></i>
+                                            Multiple Questions
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="preview-note">This is how the subject will appear to students</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize with current subject color
+        const currentColor = '{{ subject.color or "#3498db" }}';
+        updatePreviewColor(currentColor);
+        
+        // Mark the current color preset as active
+        document.querySelectorAll('.color-preset').forEach(preset => {
+            if (preset.dataset.color === currentColor) {
+                preset.classList.add('active');
+            }
+        });
+        
+        // Change button text for edit mode
+        const form = document.querySelector('.admin-form');
+        form.addEventListener('submit', function(e) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+        });
+    });
+</script>
+{% endblock %}

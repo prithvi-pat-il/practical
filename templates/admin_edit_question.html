@@ -1,0 +1,216 @@
+{% extends "admin_add_question.html" %}
+
+{% block title %}Edit Question - Admin{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <div class="breadcrumb">
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span>Edit Question</span>
+                </div>
+                <h1>
+                    <i class="fas fa-edit"></i>
+                    Edit Question
+                </h1>
+                <p>Update the question information below.</p>
+            </div>
+
+            <div class="form-card">
+                <form method="POST" class="admin-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="subject_id">
+                                <i class="fas fa-graduation-cap"></i>
+                                Subject *
+                            </label>
+                            <select id="subject_id" name="subject_id" class="form-select" required>
+                                <option value="">Choose a subject...</option>
+                                {% for subject in subjects %}
+                                    <option value="{{ subject.id }}" 
+                                            {% if subject.id == question.subject_id %}selected{% endif %}>
+                                        {{ subject.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <small class="form-help">Select the subject this question belongs to</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="difficulty">
+                                <i class="fas fa-signal"></i>
+                                Difficulty Level
+                            </label>
+                            <select id="difficulty" name="difficulty" class="form-select">
+                                <option value="Easy" {% if question.difficulty == 'Easy' %}selected{% endif %}>🟢 Easy</option>
+                                <option value="Medium" {% if question.difficulty == 'Medium' %}selected{% endif %}>🟡 Medium</option>
+                                <option value="Hard" {% if question.difficulty == 'Hard' %}selected{% endif %}>🔴 Hard</option>
+                            </select>
+                            <small class="form-help">How challenging is this question for students?</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">
+                            <i class="fas fa-heading"></i>
+                            Question Title *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="title" 
+                            name="title" 
+                            class="form-input" 
+                            required 
+                            value="{{ question.title }}"
+                            placeholder="e.g., Write a Java program to implement Stack using Arrays"
+                            autocomplete="off"
+                        >
+                        <small class="form-help">A clear, descriptive title for the question</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="question_text">
+                            <i class="fas fa-question-circle"></i>
+                            Problem Statement *
+                        </label>
+                        <textarea 
+                            id="question_text" 
+                            name="question_text" 
+                            class="form-input" 
+                            rows="6" 
+                            required
+                            placeholder="Describe the problem in detail..."
+                        >{{ question.question_text }}</textarea>
+                        <small class="form-help">Provide a detailed description of what students need to implement</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="code_answer">
+                            <i class="fas fa-code"></i>
+                            Complete Solution *
+                        </label>
+                        <div class="code-input-container">
+                            <div class="code-toolbar">
+                                <div class="language-indicator">
+                                    <i class="fas fa-code"></i>
+                                    <span>Code Solution</span>
+                                </div>
+                                <div class="code-actions">
+                                    <button type="button" class="btn btn-sm btn-outline" onclick="formatCode()">
+                                        <i class="fas fa-indent"></i> Format
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline" onclick="validateCode()">
+                                        <i class="fas fa-check"></i> Validate
+                                    </button>
+                                </div>
+                            </div>
+                            <textarea 
+                                id="code_answer" 
+                                name="code_answer" 
+                                class="code-textarea" 
+                                rows="20" 
+                                required
+                                placeholder="Enter your complete solution here..."
+                            >{{ question.code_answer }}</textarea>
+                        </div>
+                        <small class="form-help">Provide a complete, working solution with comments and proper formatting</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </a>
+                        <a href="{{ url_for('question_detail', question_id=question.id) }}" class="btn btn-secondary">
+                            <i class="fas fa-eye"></i>
+                            Preview
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Update Question
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-resize textareas to fit existing content
+        const textareas = document.querySelectorAll('textarea');
+        textareas.forEach(textarea => {
+            // Initial resize
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+            
+            // Add input event listener for future changes
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
+        });
+
+        // Change button text for edit mode
+        const form = document.querySelector('.admin-form');
+        form.addEventListener('submit', function(e) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+        });
+
+        // Real-time validation for edit form
+        const titleInput = document.getElementById('title');
+        const questionTextArea = document.getElementById('question_text');
+        const codeTextArea = document.getElementById('code_answer');
+
+        titleInput.addEventListener('input', function() {
+            validateField(this, this.value.trim().length >= 10, 'Title must be at least 10 characters');
+        });
+
+        questionTextArea.addEventListener('input', function() {
+            validateField(this, this.value.trim().length >= 50, 'Problem statement must be at least 50 characters');
+        });
+
+        codeTextArea.addEventListener('input', function() {
+            validateField(this, this.value.trim().length >= 100, 'Code solution must be at least 100 characters');
+        });
+
+        function validateField(field, isValid, errorMessage) {
+            const existingMessage = field.parentNode.querySelector('.validation-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            if (field.value.trim() === '') {
+                field.classList.remove('valid', 'invalid');
+                return;
+            }
+
+            if (isValid) {
+                field.classList.remove('invalid');
+                field.classList.add('valid');
+            } else {
+                field.classList.remove('valid');
+                field.classList.add('invalid');
+                
+                const message = document.createElement('div');
+                message.className = 'validation-message error';
+                message.textContent = errorMessage;
+                field.parentNode.appendChild(message);
+            }
+        }
+
+        // Initial validation
+        if (titleInput.value.trim()) validateField(titleInput, titleInput.value.trim().length >= 10, 'Title must be at least 10 characters');
+        if (questionTextArea.value.trim()) validateField(questionTextArea, questionTextArea.value.trim().length >= 50, 'Problem statement must be at least 50 characters');
+        if (codeTextArea.value.trim()) validateField(codeTextArea, codeTextArea.value.trim().length >= 100, 'Code solution must be at least 100 characters');
+    });
+</script>
+{% endblock %}
