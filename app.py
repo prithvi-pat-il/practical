@@ -4,7 +4,6 @@ import hashlib
 import os
 from datetime import datetime
 import re
-
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-this-in-production'  # IMPORTANT: Change this for production!
 # For production, use: app.secret_key = os.environ.get('SECRET_KEY') or 'very-secure-random-key-here'
