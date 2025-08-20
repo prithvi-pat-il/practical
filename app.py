@@ -4,12 +4,17 @@ import hashlib
 import os
 from datetime import datetime
 import re
+
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-change-this-in-production'  # IMPORTANT: Change this for production!
-# For production, use: app.secret_key = os.environ.get('SECRET_KEY') or 'very-secure-random-key-here'
+
+# Configuration from environment variables
+app.secret_key = os.environ.get('SECRET_KEY', 'dev-key-change-in-production-please')
 
 # Database configuration
-DATABASE = 'instance/database.db'
+DATABASE = os.environ.get('DATABASE_PATH', 'instance/database.db')
+DEBUG_MODE = os.environ.get('FLASK_ENV', 'development') == 'development'
+HOST = os.environ.get('HOST', '0.0.0.0')
+PORT = int(os.environ.get('PORT', 5000))
 
 def get_db_connection():
     """Get database connection"""
@@ -424,4 +429,9 @@ if __name__ == '__main__':
     # Create instance directory if it doesn't exist
     os.makedirs('instance', exist_ok=True)
     init_db()
-    app.run(debug=True)
+    
+    print(f"🚀 Starting Flask app on {HOST}:{PORT}")
+    print(f"🔧 Debug mode: {DEBUG_MODE}")
+    print(f"🗃️ Database: {DATABASE}")
+    
+    app.run(host=HOST, port=PORT, debug=DEBUG_MODE)
